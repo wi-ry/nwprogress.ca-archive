@@ -1,0 +1,72 @@
+name: Weekly website mirror
+
+on:
+  schedule:
+    - cron: "0 0 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Mirror and publish nwprogress.ca
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          TARGET_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          date="$(date -u +%F)"
+          tag="mirror-${date}"
+          archive="nwprogress.ca-${date}.tar.gz"
+
+          mkdir -p mirror
+          wget \
+            --mirror \
+            --convert-links \
+            --adjust-extension \
+            --page-requisites \
+            --no-parent \
+            --no-host-directories \
+            --wait=1 \
+            --random-wait \
+            --domains=nwprogress.ca \
+            --directory-prefix=mirror \
+            https://nwprogress.ca/
+
+          tar -czf "$archive" -C mirror .
+
+          if gh release view "$tag" --repo "$REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$tag" "$archive" --repo "$REPOSITORY" --clobber
+          else
+            gh release create "$tag" "$archive" \
+              --repo "$REPOSITORY" \
+              --target "$TARGET_SHA" \
+              --title "nwprogress.ca mirror ${date}" \
+              --notes "Website mirror captured on ${date} (UTC)."
+          fi
+
+      - name: Upload mirror for GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: mirror
+
+      - name: Deploy latest mirror to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
