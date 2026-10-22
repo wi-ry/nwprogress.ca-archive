@@ -49,6 +49,7 @@ jobs:
             --wait=1 \
             --random-wait \
             --domains=nwprogress.ca \
+            --user-agent="nwprogress.ca-archive (+https://github.com/wi-ry/nwprogress.ca-archive)" \
             --directory-prefix=mirror \
             https://nwprogress.ca/
 
