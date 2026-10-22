@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Replay of an archived capture of nwprogress.ca.">
+    <title>NWProgress.ca archive</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: system-ui, sans-serif;
+        color: #202124;
+        background: #f5f6f7;
+      }
+
+      body {
+        margin: 0;
+      }
+
+      header,
+      footer {
+        padding: 1rem clamp(1rem, 4vw, 3rem);
+      }
+
+      header {
+        background: #fff;
+        border-bottom: 1px solid #d9dcdf;
+      }
+
+      h1 {
+        margin: 0;
+      }
+
+      header p {
+        margin: 0.5rem 0 0;
+      }
+
+      main {
+        height: min(78vh, 60rem);
+        min-height: 30rem;
+      }
+
+      replay-web-page {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      footer {
+        font-size: 0.9rem;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/replaywebpage@2.5.3/ui.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>NWProgress.ca archive</h1>
+      <p>Browser replay of the website captured on October 22, 2026.</p>
+    </header>
+    <main>
+      <replay-web-page
+        source="./nwprogress.wacz"
+        url="https://nwprogress.ca/"
+        replayBase="./replay/">
+      </replay-web-page>
+    </main>
+    <footer>
+      <p>This is an archived capture; interactive or external content may not be available.</p>
+      <p><a href="./nwprogress.wacz">Download the original WACZ archive</a></p>
+    </footer>
+  </body>
+</html>
